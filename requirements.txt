@@ -1,8 +1,7 @@
-openai
-langfuse
-streamlit==1.35.0
+streamlit==1.44.1
+pandas==2.1.4
+pycaret==3.3.2
 python-dotenv
-pandas==2.2.2
-pycaret==3.3.0
-scikit-learn==1.4.2
-numpy==1.26.4
+langfuse==3.0.0
+openai==1.66.3
+boto3
