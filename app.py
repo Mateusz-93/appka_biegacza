@@ -3,7 +3,7 @@ import pandas as pd
 import json
 import os
 from dotenv import load_dotenv
-from langfuse import Langfuse
+from langfuse import Langfuse, observe
 
 from langfuse.openai import OpenAI
 from pycaret.regression import load_model, predict_model
@@ -22,7 +22,12 @@ if not st.session_state.get("openai_api_key"):
         if st.session_state["openai_api_key"]:
             st.rerun()
 
-
+langfuse = Langfuse(
+    public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+    secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+    host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
+)
+@observe
 def get_data_from_message_observed(message, model="gpt-4o"):
     prompt = """
     Jesteś pomocnikiem, któremu zostaną podane dane dotyczące płci, wieku oraz tempie biegu na 5 km. 
@@ -94,6 +99,7 @@ with st.expander("Kliknij, aby włączyć muzykę 🎵 wybitnego biegacza"):
 
 # Tytuł aplikacji
 st.title("Aplikacja wybitnego biegacza 🏃‍♂️")
+st.subheader("Oszacuję dla Ciebie czas w jakim mógłbyś przebiec półmaraton (~21km) jeśli się postarasz")
 if "text_area" not in st.session_state:
     st.session_state["text_area"] = ""
 if "submitted" not in st.session_state:
