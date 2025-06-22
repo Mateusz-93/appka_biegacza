@@ -11,6 +11,9 @@ from pycaret.regression import load_model, predict_model
 MODEL_NAME = "best_model"
 
 load_dotenv()
+st.write("Langfuse host:", os.getenv("LANGFUSE_HOST"))
+st.write("Langfuse public key:", os.getenv("LANGFUSE_PUBLIC_KEY"))
+
 llm_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 if not st.session_state.get("openai_api_key"):
@@ -34,6 +37,7 @@ langfuse = Langfuse(
 
 @observe
 def get_data_from_message_observed(message, model="gpt-4o"):
+    st.write("✅ Langfuse observe działa — funkcja się wykonuje")
     prompt = """
     Jesteś pomocnikiem, któremu zostaną podane dane dotyczące płci, wieku oraz tempie biegu na 5 km. 
     <płeć>: dla mężczyzny oznacz jako "M". Dla kobiety oznacz jako "K". Jeżeli nie zostanie podane wprost to może po imieniu albo sposobie pisania uda Ci się ustalić płeć. Jeśli nie to zostaw puste.
