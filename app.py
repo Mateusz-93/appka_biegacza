@@ -12,6 +12,11 @@ MODEL_NAME = "best_model"
 
 load_dotenv()
 
+# 👇 Debug – sprawdzenie czy zmienne środowiskowe są dostępne
+st.write("🧪 LANGFUSE_PUBLIC_KEY:", os.getenv("LANGFUSE_PUBLIC_KEY") or "❌ Nie ustawione")
+st.write("🧪 LANGFUSE_SECRET_KEY:", os.getenv("LANGFUSE_SECRET_KEY") or "❌ Nie ustawione")
+st.write("🧪 LANGFUSE_HOST:", os.getenv("LANGFUSE_HOST") or "❌ Nie ustawione")
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Tworzysz obiekt Langfuse
@@ -21,8 +26,14 @@ langfuse = Langfuse(
     host=os.getenv("LANGFUSE_HOST")
 )
 
-
-
+## na chwilę
+lf = Langfuse(
+  public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+  secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+  host=os.getenv("LANGFUSE_HOST")
+)
+st.write("Langfuse health:", lf.health())
+## do usunięcia potem
 
 if not st.session_state.get("openai_api_key"):
     if "OPENAI_API_KEY" in os.environ:
