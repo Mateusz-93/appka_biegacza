@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 from langfuse import Langfuse, observe
 
-from langfuse.openai import openai
+import openai
 from pycaret.regression import load_model, predict_model
 
 MODEL_NAME = "best_model"

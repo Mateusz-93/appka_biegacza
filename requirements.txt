@@ -4,3 +4,4 @@ pycaret==3.3.2
 python-dotenv
 langfuse==3.0.0
 boto3
+openai==1.66.3
