@@ -3,7 +3,7 @@ import pandas as pd
 import json
 import os
 from dotenv import load_dotenv
-from langfuse import Langfuse, observe
+from langfuse import Langfuse, observe, get_client
 
 import openai
 from pycaret.regression import load_model, predict_model
@@ -12,10 +12,11 @@ MODEL_NAME = "best_model"
 
 load_dotenv()
 
-# 👇 Debug – sprawdzenie czy zmienne środowiskowe są dostępne
-st.write("🧪 LANGFUSE_PUBLIC_KEY:", os.getenv("LANGFUSE_PUBLIC_KEY") or "❌ Nie ustawione")
-st.write("🧪 LANGFUSE_SECRET_KEY:", os.getenv("LANGFUSE_SECRET_KEY") or "❌ Nie ustawione")
-st.write("🧪 LANGFUSE_HOST:", os.getenv("LANGFUSE_HOST") or "❌ Nie ustawione")
+langfuse = get_client()
+# Simple health check span for demo:
+with langfuse.start_as_current_span(name="DigitalOceanTestTrace"):
+    langfuse.update_current_span(output="✅ test trace")
+
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -25,6 +26,7 @@ langfuse = Langfuse(
     secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
     host=os.getenv("LANGFUSE_HOST")
 )
+
 
 ## na chwilę
 lf = Langfuse(
@@ -44,7 +46,7 @@ if not st.session_state.get("openai_api_key"):
         if st.session_state["openai_api_key"]:
             st.rerun()
 
-@observe
+@observe(name="get_data")
 def get_data_from_message_observed(message, model="gpt-4o"):
     st.write("✅ Langfuse observe działa — funkcja się wykonuje")
     prompt = """
