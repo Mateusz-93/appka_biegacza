@@ -5,16 +5,24 @@ import os
 from dotenv import load_dotenv
 from langfuse import Langfuse, observe
 
-from langfuse.openai import OpenAI
+from langfuse.openai import openai
 from pycaret.regression import load_model, predict_model
 
 MODEL_NAME = "best_model"
 
 load_dotenv()
-st.write("Langfuse host:", os.getenv("LANGFUSE_HOST"))
-st.write("Langfuse public key:", os.getenv("LANGFUSE_PUBLIC_KEY"))
 
-llm_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Tworzysz obiekt Langfuse
+langfuse = Langfuse(
+    public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+    secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+    host=os.getenv("LANGFUSE_HOST")
+)
+
+
+
 
 if not st.session_state.get("openai_api_key"):
     if "OPENAI_API_KEY" in os.environ:
@@ -24,16 +32,6 @@ if not st.session_state.get("openai_api_key"):
         st.session_state["openai_api_key"] = st.text_input("Klucz API", type="password")
         if st.session_state["openai_api_key"]:
             st.rerun()
-
-LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY")
-LANGFUSE_SECRET_KEY = os.getenv("LANGFUSE_SECRET_KEY")
-LANGFUSE_HOST = os.getenv("LANGFUSE_HOST")  
-
-langfuse = Langfuse(
-    public_key=LANGFUSE_PUBLIC_KEY,
-    secret_key=LANGFUSE_SECRET_KEY,
-    host=LANGFUSE_HOST
-)
 
 @observe
 def get_data_from_message_observed(message, model="gpt-4o"):
@@ -50,7 +48,7 @@ def get_data_from_message_observed(message, model="gpt-4o"):
         {"role": "system", "content": prompt},
         {"role": "user", "content": message},
     ]
-    chat_completion = llm_client.chat.completions.create(
+    chat_completion = openai.chat.completions.create(
         response_format={"type": "json_object"},
         messages=messages,
         model=model,
@@ -107,7 +105,7 @@ with st.expander("Kliknij, aby włączyć muzykę 🎵 wybitnego biegacza"):
 
 
 # Tytuł aplikacji
-st.title("Aplikacja wybitnego biegacza 🏃‍♂️")
+st.title("App'ka wybitnego biegacza 🏃‍♂️")
 st.subheader("Oszacuję dla Ciebie czas w jakim mógłbyś przebiec półmaraton (~21km) jeśli się postarasz")
 if "text_area" not in st.session_state:
     st.session_state["text_area"] = ""
