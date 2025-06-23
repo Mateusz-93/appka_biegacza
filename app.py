@@ -52,7 +52,6 @@ def get_data_from_message_observed(message, model="gpt-4o"):
         response_format={"type": "json_object"},
         messages=messages,
         model=model,
-        name="get_data_from_message_observed",
     )
     resp = chat_completion.choices[0].message.content
     try:
