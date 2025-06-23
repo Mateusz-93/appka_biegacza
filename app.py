@@ -32,7 +32,7 @@ lf = Langfuse(
   secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
   host=os.getenv("LANGFUSE_HOST")
 )
-st.write("Langfuse health:", lf.health())
+# st.write("Langfuse health:", lf.health())
 ## do usunięcia potem
 
 if not st.session_state.get("openai_api_key"):
